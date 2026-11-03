@@ -16,3 +16,9 @@ Python, Requests, Pandas, Matplotlib, FastAPI, Uvicorn, Google Colab
 - `main.py`: FastAPI app
 
 ## Run the API
+pip install fastapi uvicorn requests
+uvicorn main:app --reload
+
+## Next steps
+- Store data in SQL (SQLite)
+- Compared Linear Regression and Random Forest against a naive baseline (baseline won so far); next: predict 24 hours ahead
