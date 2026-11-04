@@ -7,6 +7,12 @@ Fetches live weather and air quality (smog) data for Lahore from the Open-Meteo 
 - Converts JSON into Pandas DataFrames
 - Plots the 7-day temperature trend and AQI with the 150 "Unhealthy" threshold
 - FastAPI endpoints: `/hello` and `/latest` (latest PM2.5 and US AQI)
+- - `/predict` (POST): predicts AQI 24 hours ahead from hour, PM2.5, PM10, and AQI lags
+- Linear Regression (MAE 15.9) beat the "same as now" baseline (MAE 22.9) on ~7 days of held-out data
+
+## Limitations
+- Only ~30 days of data, so results are early
+- Model tends to pull predictions toward the 30-day average
 
 ## Tech
 Python, Requests, Pandas, Matplotlib, FastAPI, Uvicorn, Google Colab
