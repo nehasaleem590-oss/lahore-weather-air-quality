@@ -1,27 +1,19 @@
-import requests
 from fastapi import FastAPI
+from pydantic import BaseModel
+import joblib, pandas as pd
 
 app = FastAPI()
+model = joblib.load("aqi_model_24h.pkl")
+feats = joblib.load("features.pkl")
 
+class Data(BaseModel):
+    hour: int
+    pm2_5: float
+    pm10: float
+    aqi_lag1: float
+    aqi_lag24: float
 
-@app.get("/hello")
-def hello():
-    return {"message": "Hello Neha"}
-
-
-@app.get("/latest")
-def latest():
-    url = "https://air-quality-api.open-meteo.com/v1/air-quality"
-    params = {
-        "latitude": 31.5497,
-        "longitude": 74.3436,
-        "hourly": "pm2_5,us_aqi",
-        "timezone": "Asia/Karachi",
-    }
-    r = requests.get(url, params=params)
-    data = r.json()["hourly"]
-    return {
-        "time": data["time"][0],
-        "pm2_5": data["pm2_5"][0],
-        "us_aqi": data["us_aqi"][0],
-    }
+@app.post("/predict")
+def predict(d: Data):
+    X = pd.DataFrame([d.model_dump()])[feats]
+    return {"aqi_24h_later": float(model.predict(X)[0])}
