@@ -28,3 +28,13 @@ uvicorn main:app --reload
 ## Next steps
 - Store data in SQL (SQLite)
 - Compared Linear Regression and Random Forest against a naive baseline (baseline won so far); next: predict 24 hours ahead
+- ## SQL Analysis
+
+Hourly AQI data for Lahore (~840 hours) was stored in a SQLite database (`aqi.db`) and analysed with SQL queries.
+
+**Key findings:**
+- **Worst day:** 2 Nov 2026 (average US AQI 205, peak 215)
+- **Unhealthy hours:** 554 of ~840 hours (about 66%) had AQI above 150
+- **Worst time of day:** 5 PM to 8 PM, peaking at 6 PM (average AQI 162)
+
+**Queries used:** `GROUP BY` on day and hour, `AVG`, `MAX`, `COUNT`, `ORDER BY ... LIMIT`.
