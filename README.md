@@ -50,3 +50,4 @@ Hourly AQI data for Lahore (~840 hours) was stored in a SQLite database (`aqi.db
 - **Worst time of day:** 5 PM to 8 PM, peaking at 6 PM (average AQI 162)
 
 **Queries used:** `GROUP BY` on day and hour, `AVG`, `MAX`, `COUNT`, `ORDER BY ... LIMIT`.
+**Note:** The dataset includes forecast hours, so exact numbers may change when the notebook is re-run.
