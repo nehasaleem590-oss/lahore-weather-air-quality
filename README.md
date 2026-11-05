@@ -27,6 +27,18 @@ uvicorn main:app --reload
 
 ## Next steps
 - Store data in SQL (SQLite)
+- ## SQL Analysis
+
+Hourly AQI data for Lahore was stored in a SQLite database (`aqi.db`) and analysed with SQL queries.
+
+**Key findings:**
+- **Worst days:** early November, with daily average US AQI around 200
+- **Unhealthy hours:** about two-thirds of all hours had AQI above 150
+- **Worst time of day:** 5 PM to 8 PM, peaking around 6 PM
+
+**Queries used:** `GROUP BY` on day and hour, `AVG`, `MAX`, `COUNT`, `ORDER BY ... LIMIT`.
+
+**Note:** The dataset includes forecast hours, so exact numbers may change when the notebook is re-run.
 - Compared Linear Regression and Random Forest against a naive baseline (baseline won so far); next: predict 24 hours ahead
 - ## SQL Analysis
 
