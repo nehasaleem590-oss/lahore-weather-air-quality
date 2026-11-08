@@ -39,3 +39,6 @@ Then open `http://127.0.0.1:8000/docs`
 - Collect data daily to build my own dataset
 - Add a `/history` endpoint
 - Improve the model with more lag features
+
+- /history
+- Get /history :returns past predictions
