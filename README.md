@@ -1,53 +1,41 @@
 # Lahore Weather & Air Quality Tracker
 
-Fetches live weather and air quality (smog) data for Lahore from the Open-Meteo API, cleans it with Pandas, serves it through a FastAPI app, and visualizes trends.
+Fetches live weather and air quality (smog) data for Lahore from the Open-Meteo API, cleans it with Pandas, stores it in SQLite, predicts AQI 24 hours ahead with scikit-learn, and serves the model through FastAPI.
 
 ## What it does
 - Fetches hourly temperature, humidity, PM10, PM2.5 and US AQI data
-- Converts JSON into Pandas DataFrames
-- Plots the 7-day temperature trend and AQI with the 150 "Unhealthy" threshold
-- FastAPI endpoints: `/hello` and `/latest` (latest PM2.5 and US AQI)
-- - `/predict` (POST): predicts AQI 24 hours ahead from hour, PM2.5, PM10, and AQI lags
-- Linear Regression (MAE 15.9) beat the "same as now" baseline (MAE 22.9) on ~7 days of held-out data
+- Converts JSON into Pandas DataFrames and plots trends
+- Stores data in SQLite and analyses it with SQL
+- FastAPI endpoints: `/hello`, `/latest` and `/predict` (POST)
+
+## SQL analysis
+Hourly AQI data for Lahore (about 840 hours) was stored in SQLite (`aqi.db`).
+
+- Worst day: 2 Nov 2026 (average US AQI 205, peak 215)
+- Unhealthy hours: 577 of about 840 hours (roughly 69%) had AQI above 150
+- Worst time of day: around 6 PM (average AQI 164) and early morning (5-6 AM)
+
+Queries used: `GROUP BY`, `AVG`, `MAX`, `COUNT`, `ORDER BY ... LIMIT`.
+Note: the data includes some forecast hours, so exact numbers may change when the notebook is re-run.
+
+## Model results (24 hours ahead)
+On about 3 months of hourly data, Linear Regression (MAE 13.3) beat the "same as now" baseline (MAE 14.2), but only by a small margin. Random Forest (MAE 15.3) did not beat the baseline.
 
 ## Limitations
-- Only ~30 days of data, so results are early
-- Model tends to pull predictions toward the 30-day average
+- Only about 3 months of data, so results are early
+- The model is pulled towards the average AQI
 
 ## Tech
-Python, Requests, Pandas, Matplotlib, FastAPI, Uvicorn, Google Colab
-
-## Files
-- `lahore_weather_analysis (1).ipynb`: data fetching, cleaning and charts
-- `main.py`: FastAPI app
+Python, Requests, Pandas, Matplotlib, scikit-learn, SQLite, FastAPI, Uvicorn, Google Colab
 
 ## Run the API
-pip install fastapi uvicorn requests
+```
+pip install fastapi uvicorn requests scikit-learn joblib pandas
 uvicorn main:app --reload
+```
+Then open `http://127.0.0.1:8000/docs`
 
 ## Next steps
-- Store data in SQL (SQLite)
-- ## SQL Analysis
-
-Hourly AQI data for Lahore was stored in a SQLite database (`aqi.db`) and analysed with SQL queries.
-
-**Key findings:**
-- **Worst days:** early November, with daily average US AQI around 200
-- **Unhealthy hours:** about two-thirds of all hours had AQI above 150
-- **Worst time of day:** 5 PM to 8 PM, peaking around 6 PM
-
-**Queries used:** `GROUP BY` on day and hour, `AVG`, `MAX`, `COUNT`, `ORDER BY ... LIMIT`.
-
-**Note:** The dataset includes forecast hours, so exact numbers may change when the notebook is re-run.
-- Compared Linear Regression and Random Forest against a naive baseline (baseline won so far); next: predict 24 hours ahead
-- ## SQL Analysis
-
-Hourly AQI data for Lahore (~840 hours) was stored in a SQLite database (`aqi.db`) and analysed with SQL queries.
-
-**Key findings:**
-- **Worst day:** 2 Nov 2026 (average US AQI 205, peak 215)
-- **Unhealthy hours:** 554 of ~840 hours (about 66%) had AQI above 150
-- **Worst time of day:** 5 PM to 8 PM, peaking at 6 PM (average AQI 162)
-
-**Queries used:** `GROUP BY` on day and hour, `AVG`, `MAX`, `COUNT`, `ORDER BY ... LIMIT`.
-**Note:** The dataset includes forecast hours, so exact numbers may change when the notebook is re-run.
+- Collect data daily to build my own dataset
+- Add a `/history` endpoint
+- Improve the model with more lag features
